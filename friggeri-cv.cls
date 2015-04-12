@@ -154,12 +154,12 @@ BoldFont=Raleway-Bold.ttf]
   \hfill
   \parbox[t]{11.8cm}{%
     \textbf{#2}\\%
-    {\footnotesize\addfontfeature{Color=lightgray} #3}\\[5pt]
+    {\footnotesize\addfontfeature{Color=lightgray} #3} \vspace{0.5em}
   }
   \begin{adjustwidth}{2.2cm}{0cm}
-    #4
+    #4 \vspace{0.75em}
   \end{adjustwidth}
-}
+ }
 
 %%%%%%%%%%%%%%
 % Side block %
