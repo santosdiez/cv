@@ -7,13 +7,14 @@
 }
 \ProcessOptions\relax
 \LoadClass{article}
-
+\usepackage{changepage}
 
 %%%%%%%%%%
 % Colors %
 %%%%%%%%%%
 
 \RequirePackage{xcolor}
+\RequirePackage{longtable}
 
 \definecolor{white}{RGB}{255,255,255}
 
@@ -21,17 +22,15 @@
 \definecolor{gray}{HTML}{4D4D4D}
 \definecolor{lightgray}{HTML}{999999}
 
-\definecolor{green}{HTML}{C2E15F}
-\definecolor{orange}{HTML}{FDA333}
-\definecolor{purple}{HTML}{D3A4F9}
-\definecolor{red}{HTML}{FB4485}
-\definecolor{blue}{HTML}{6CE0F1}
+\definecolor{green}{HTML}{CAD95A}
+\definecolor{orange}{HTML}{DEAE5C}
+\definecolor{purple}{HTML}{863F92}
+\definecolor{blue}{HTML}{456493}
 
 \ifdefined\@cv@print
   \colorlet{green}{gray}
   \colorlet{orange}{gray}
   \colorlet{purple}{gray}
-  \colorlet{red}{gray}
   \colorlet{blue}{gray}
   \colorlet{fillheader}{white}
   \colorlet{header}{gray}
@@ -46,17 +45,36 @@
 % Fonts %
 %%%%%%%%%
 
+% \RequirePackage[quiet]{fontspec}
+% \RequirePackage[math-style=TeX,vargreek-shape=unicode]{unicode-math}
+% 
+% \newfontfamily\bodyfont[]{Helvetica Neue}
+% \newfontfamily\thinfont[]{Helvetica Neue UltraLight}
+% \newfontfamily\headingfont[]{Helvetica Neue Condensed Bold}
+% 
+% \defaultfontfeatures{Mapping=tex-text}
+% \setmainfont[Mapping=tex-text, Color=textcolor]{Helvetica Neue Light}
+% 
+% \setmathfont{XITS Math}
+
+%%% modified by Karol Kozioł for ShareLaTex use
 \RequirePackage[quiet]{fontspec}
 \RequirePackage[math-style=TeX,vargreek-shape=unicode]{unicode-math}
 
-\newfontfamily\bodyfont[]{Helvetica Neue}
-\newfontfamily\thinfont[]{Helvetica Neue UltraLight}
-\newfontfamily\headingfont[]{Helvetica Neue Condensed Bold}
+\newfontfamily\bodyfont
+[BoldFont=Raleway-Bold.ttf]
+{Raleway-Regular.ttf}
+\newfontfamily\thinfont[]{Raleway-Thin.ttf}
+\newfontfamily\headingfont[]{Raleway-Bold.ttf}
 
 \defaultfontfeatures{Mapping=tex-text}
-\setmainfont[Mapping=tex-text, Color=textcolor]{Helvetica Neue Light}
+\setmainfont
+[Mapping=tex-text, Color=textcolor,
+BoldFont=Raleway-Bold.ttf]
+{Raleway-Regular.ttf}
 
-\setmathfont{XITS Math}
+\setmathfont{Raleway-Regular.ttf}
+%%%
 
 %%%%%%%%%%
 % Header %
@@ -65,21 +83,21 @@
 \RequirePackage{tikz}
 
 \newcommand{\rolefont}{%
-  \fontsize{14pt}{24pt}\selectfont%
+  \fontsize{10pt}{22pt}\selectfont%
   \thinfont%
   \color{white}%
 }
 
-\newcommand{\header}[3]{%
+\newcommand{\header}[4]{%
   \begin{tikzpicture}[remember picture,overlay]
     \node [rectangle, fill=fillheader, anchor=north, minimum width=\paperwidth, minimum height=4cm] (box) at (current page.north){};
     \node [anchor=center] (name) at (box) {%
-      \fontsize{40pt}{72pt}\color{header}%
-      {\thinfont #1}{\bodyfont  #2}
+      \fontsize{35pt}{67pt}\color{header}%
+      {\thinfont #1}{\bodyfont #2}{\thinfont #3}
     };
     \node [anchor=north] at (name.south) {%
       \fontsize{14pt}{24pt}\color{header}%
-      \thinfont #3%
+      \thinfont #4%
     };
   \end{tikzpicture}
   \vspace{2.5cm}
@@ -93,12 +111,11 @@
 \RequirePackage{parskip}
 
 \newcounter{colorCounter}
-\def\@sectioncolor#1#2#3{%
+\def\sectioncolor#1#2#3{%
   {%
     \color{%
-      \ifcase\value{colorCounter}%
+      \ifcase\intcalcMod{\thecolorCounter}{4}%
         blue\or%
-        red\or%
         orange\or%
         green\or%
         purple\else%
@@ -112,15 +129,9 @@
   \par\vspace{\parskip}
   {%
     \LARGE\headingfont\color{headercolor}%
-    \@sectioncolor #1%
+    \sectioncolor #1%
   }
   \par\vspace{\parskip}
-}
-
-\renewcommand{\subsection}[2]{
-  \par\vspace{.5\parskip}%
-  \Large\headingfont\color{headercolor} #2%
-  \par\vspace{.25\parskip}%
 }
 
 \pagestyle{empty}
@@ -132,19 +143,23 @@
 
 \setlength{\tabcolsep}{0pt}
 \newenvironment{entrylist}{%
-  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ll}
 }{%
-  \end{tabular*}
 }
+
 \renewcommand{\bfseries}{\headingfont\color{headercolor}}
 \newcommand{\entry}[4]{%
-  #1&\parbox[t]{11.8cm}{%
-    \textbf{#2}%
-    \hfill%
-    {\footnotesize\addfontfeature{Color=lightgray} #3}\\%
-    #4\vspace{\parsep}%
-  }\\}
-
+  \parbox[t]{2.0cm} {%
+    #1
+  }
+  \hfill
+  \parbox[t]{11.8cm}{%
+    \textbf{#2}\\%
+    {\footnotesize\addfontfeature{Color=lightgray} #3}\\[5pt]
+  }
+  \begin{adjustwidth}{2.2cm}{0cm}
+    #4
+  \end{adjustwidth}
+}
 
 %%%%%%%%%%%%%%
 % Side block %
@@ -172,7 +187,7 @@
 % Bibliography %
 %%%%%%%%%%%%%%%%
 
-\RequirePackage[style=verbose, maxnames=99, sorting=ydnt]{biblatex}
+\RequirePackage[style=verbose, maxnames=99, sorting=ydnt, backend=biber]{biblatex}
 
 \DeclareFieldFormat[article]{title}{#1\par}
 \DeclareFieldFormat[inproceedings]{title}{#1\par}
@@ -192,8 +207,6 @@
     \printfield{pages}%
     \newunit%
     \printlist{publisher}%
-    \setunit*{\addcomma\space}%
-    \printfield{year}%
     \newunit%
   }
   \par\vspace{0.3\baselineskip}
@@ -263,10 +276,10 @@
     {}%
 }
 
-\newcommand{\printbibsection}[2]{
+\newcommand{\printbibsection}[2]{%
   \begin{refsection}
-    \nocite{*}
-    \printbibliography[sorting=chronological, type={#1}, title={#2}, heading=subbibliography]
+    \nocite{*}%
+    \printbibliography[sorting=chronological, type={#1}, title={#2}, heading=subbibliography]%
   \end{refsection}
 }
 
